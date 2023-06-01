@@ -1,0 +1,310 @@
+C51 COMPILER V9.60.0.0   LCD_INTERFACING                                                   07/10/2022 18:02:02 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE LCD_INTERFACING
+OBJECT MODULE PLACED IN .\Objects\LCD_Interfacing.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE LCD_Interfacing.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Li
+                    -stings\LCD_Interfacing.lst) TABS(2) OBJECT(.\Objects\LCD_Interfacing.obj)
+
+line level    source
+
+   1          #include <REGX51.H>// 8051 family
+   2          #include <stdio.h>
+   3          #define LCD_dat P2
+   4          sbit rs = P1^0;
+   5          /*sbit rw = P3^1;*/
+   6          sbit en = P1^2;
+   7          sbit set = P1^3;
+   8          sbit inc = P1^4;    
+   9          sbit next = P1^5;
+  10          sbit fin = P1^6;
+  11          sbit fin1 = P1^7;
+  12          void delay(unsigned int dly);
+  13          void lcd_cmd(unsigned char ch);
+  14          void lcd_data(unsigned char ch);
+  15          void lcd_str(unsigned char *str);
+  16          
+  17          void main(void)
+  18            {
+  19   1        unsigned int digit = 0;
+  20   1        unsigned int j,k;
+  21   1        unsigned int mode = 0;
+  22   1        char date1[2], mon1[2], year1[2],hrs1[2],min1[2],sec1[2];
+  23   1        unsigned int date = 0;
+  24   1        unsigned int mon = 0;
+  25   1        unsigned int year = 22;
+  26   1        unsigned int hrs = 0;
+  27   1        unsigned int min = 0;
+  28   1        unsigned int sec = 0;
+  29   1        unsigned char am1[2]="am";
+  30   1        unsigned char pm1[2]="pm";
+  31   1        unsigned int am = 1;
+  32   1          start:
+  33   1        lcd_cmd (0x38);
+  34   1        lcd_cmd (0x0e);
+  35   1        lcd_cmd(0x80);
+  36   1        lcd_str("Digital Clock");
+  37   1        lcd_cmd(0xC0);
+  38   1        lcd_str("By Group 13");
+  39   1        delay(2000);
+  40   1        lcd_cmd (0x01);
+  41   1        lcd_cmd (0x80);
+  42   1        lcd_str("Please Set Date");
+  43   1        lcd_cmd(0xC0);
+  44   1        lcd_str("And Time");
+  45   1        delay(2000);
+  46   1        lcd_cmd (0x01);
+  47   1        lcd_cmd(0x0E);
+  48   1        lcd_cmd (0x80);
+  49   1        lcd_str("Date ");
+  50   1        for(j=0;fin!=0;j++)
+  51   1        {if (set == 0){mode=0;
+  52   3                        delay(500);}
+  53   2        if (next == 0){++mode;
+  54   3                        delay(500);}
+C51 COMPILER V9.60.0.0   LCD_INTERFACING                                                   07/10/2022 18:02:02 PAGE 2   
+
+  55   2        if (inc==0 && mode==0){
+  56   3                                if(date<=30){++date;}
+  57   3                                else if(date>30) {date=1;}
+  58   3                                delay(500);
+  59   3                                }
+  60   2        if(inc==0 && mode==1){if(mon<=11){++mon;}
+  61   3                                else if(mon>11) {mon=1;}
+  62   3                              delay(500); 
+  63   3                              }
+  64   2        if(inc==0 && mode==2){if(year<=98){++year;}
+  65   3                                else if(year>98) {year=0;}
+  66   3                              delay(500); 
+  67   3                              }
+  68   2                              sprintf(date1,"%u",date);
+  69   2                              if(date>=10){
+  70   3                                lcd_cmd(0x85);
+  71   3                                lcd_str(date1);}
+  72   2                              else{lcd_cmd(0x85);
+  73   3                                   lcd_data('0');
+  74   3                                   lcd_cmd(0x86);
+  75   3                                   lcd_str(date1);}
+  76   2                                lcd_cmd(0x87);
+  77   2                                lcd_data('/');
+  78   2                                sprintf(mon1,"%u",mon);
+  79   2                              if(mon>=10){
+  80   3                                lcd_cmd(0x88);
+  81   3                                lcd_str(mon1);}
+  82   2                              else{lcd_cmd(0x88);
+  83   3                                   lcd_data('0');
+  84   3                                   lcd_cmd(0x89);
+  85   3                                   lcd_str(mon1);}
+  86   2                                lcd_data('/');
+  87   2                                lcd_data('2');
+  88   2                                lcd_data('0');
+  89   2                                sprintf(year1,"%u",year);
+  90   2                              if(year>=10){
+  91   3                                lcd_cmd(0x8d);
+  92   3                                lcd_str(year1);}
+  93   2                              else{lcd_cmd(0x8d);
+  94   3                                   lcd_data('0');
+  95   3                                   lcd_cmd(0x8e);
+  96   3                                   lcd_str(year1);}
+  97   2        }
+  98   1        lcd_cmd(0xC0);
+  99   1        lcd_cmd(0x0E);
+ 100   1        lcd_str("Time ");
+ 101   1        mode = 0;
+ 102   1        fin = 1;
+ 103   1        for(k=0;fin1!=0;k++)
+ 104   1        {if (set == 0){mode=0;
+ 105   3                        delay(500);}
+ 106   2        if (next == 0){++mode;
+ 107   3                        delay(500);}
+ 108   2        if (inc==0 && mode==0){
+ 109   3                                if(hrs<=11){++hrs;}
+ 110   3                                else if(hrs>11) {hrs=1;}
+ 111   3                                delay(500);
+ 112   3                                }
+ 113   2        if(inc==0 && mode==1){if(min<=58){++min;}
+ 114   3                              else if(min>58) {min=0;}
+ 115   3                              delay(500); 
+ 116   3                              }
+C51 COMPILER V9.60.0.0   LCD_INTERFACING                                                   07/10/2022 18:02:02 PAGE 3   
+
+ 117   2        if(inc==0 && mode==2){if(am==0){am=1;}
+ 118   3                              else if (am==1) {am=0;}
+ 119   3                              delay(500); 
+ 120   3                              }
+ 121   2                              sprintf(hrs1,"%u",hrs);
+ 122   2                              if(hrs>=10){
+ 123   3                                lcd_cmd(0xc5);
+ 124   3                                lcd_str(hrs1);}
+ 125   2                              else{lcd_cmd(0xc5);
+ 126   3                                   lcd_data('0');
+ 127   3                                   lcd_cmd(0xc6);
+ 128   3                                   lcd_str(hrs1);}
+ 129   2                                lcd_cmd(0xc7);
+ 130   2                                lcd_data(':');
+ 131   2                                sprintf(min1,"%u",min);
+ 132   2                              if(min>=10){
+ 133   3                                lcd_cmd(0xc8);
+ 134   3                                lcd_str(min1);}
+ 135   2                              else{lcd_cmd(0xc8);
+ 136   3                                   lcd_data('0');
+ 137   3                                   lcd_cmd(0xc9);
+ 138   3                                   lcd_str(min1);}
+ 139   2                                lcd_cmd(0xca);
+ 140   2                                lcd_data(':');
+ 141   2                                lcd_data('0');
+ 142   2                                lcd_data('0');
+ 143   2                                lcd_data(' ');
+ 144   2                                if (am==1){lcd_str(am1);}
+ 145   2                                if (am==0){lcd_str(pm1);}
+ 146   2                                
+ 147   2        }
+ 148   1        lcd_cmd(0x01);
+ 149   1        while(1)/*infinity loop*/
+ 150   1          {++ sec;
+ 151   2            if(sec>59){sec=0;
+ 152   3                        ++min;}
+ 153   2            if(min>59){min=0;
+ 154   3                        ++hrs;}
+ 155   2            if(hrs>12){hrs=1;
+ 156   3                        if(am==1){am=0;}
+ 157   3                        if(am==0){++date;
+ 158   4                                  am=1;}
+ 159   3                      }
+ 160   2            if(date>30){date=0;
+ 161   3                        ++mon;}
+ 162   2            if(mon>12){mon=0;
+ 163   3                        ++year;}
+ 164   2            if(set==0){break;}
+ 165   2            
+ 166   2        //lcd_cmd(0x01);
+ 167   2        lcd_cmd(0x0E);
+ 168   2        lcd_cmd (0x80);
+ 169   2        lcd_str("Date ");
+ 170   2            sprintf(date1,"%u",date);
+ 171   2            sprintf(mon1,"%u",mon);
+ 172   2            sprintf(year1,"%u",year);
+ 173   2            sprintf(hrs1,"%u",hrs);
+ 174   2            sprintf(min1,"%u",min);
+ 175   2            sprintf(sec1,"%u",sec);
+ 176   2            if(date>=10){lcd_cmd(0x85);
+ 177   3                         lcd_str(date1);}
+ 178   2            else{lcd_cmd(0x85);
+C51 COMPILER V9.60.0.0   LCD_INTERFACING                                                   07/10/2022 18:02:02 PAGE 4   
+
+ 179   3                 lcd_data('0');
+ 180   3                 lcd_cmd(0x86);
+ 181   3                 lcd_str(date1);}
+ 182   2            lcd_cmd(0x87);
+ 183   2            lcd_data('/');
+ 184   2            if(mon>=10){lcd_cmd(0x88);
+ 185   3                        lcd_str(mon1);}
+ 186   2            else{lcd_cmd(0x88);
+ 187   3                 lcd_data('0');
+ 188   3                 lcd_cmd(0x89);
+ 189   3                 lcd_str(mon1);}
+ 190   2            lcd_cmd(0x8a);
+ 191   2            lcd_data('/');
+ 192   2            lcd_cmd(0x8b);
+ 193   2            lcd_data('2');
+ 194   2            lcd_cmd(0x8c);
+ 195   2            lcd_data('0');
+ 196   2            if(year>=10){lcd_cmd(0x8d);
+ 197   3                         lcd_str(year1);}
+ 198   2            else{lcd_cmd(0x8d);
+ 199   3                 lcd_data('0');
+ 200   3                 lcd_cmd(0x8e);
+ 201   3                 lcd_str(year1);}
+ 202   2            lcd_cmd(0x8f);
+ 203   2            lcd_data(' ');
+ 204   2            lcd_cmd(0xc0);
+ 205   2            lcd_cmd(0x0E);
+ 206   2            lcd_str("time ");
+ 207   2            if(hrs>=10){lcd_cmd(0xc5);
+ 208   3                        lcd_str(hrs1);}
+ 209   2            else{lcd_cmd(0xc5);
+ 210   3                 lcd_data('0');
+ 211   3                 lcd_cmd(0xc6);
+ 212   3                 lcd_str(hrs1);}
+ 213   2            lcd_cmd(0xc7);
+ 214   2            lcd_data(':');
+ 215   2            if(min>=10){lcd_cmd(0xc8);
+ 216   3                        lcd_str(min1);}
+ 217   2            else{lcd_cmd(0xc8);
+ 218   3                 lcd_data('0');
+ 219   3                 lcd_cmd(0xc9);
+ 220   3                 lcd_str(min1);}
+ 221   2            lcd_cmd(0xca);
+ 222   2            lcd_data(':');
+ 223   2            if(sec>=10){lcd_cmd(0xcb);
+ 224   3                        lcd_str(sec1);}
+ 225   2            else{lcd_cmd(0xcb);
+ 226   3                 lcd_data('0');
+ 227   3                 lcd_cmd(0xcc);
+ 228   3                 lcd_str(sec1);}
+ 229   2            lcd_data(' ');
+ 230   2            if(am==1){lcd_str(am1);}
+ 231   2            if(am==0){lcd_str(pm1);}
+ 232   2            delay(486);
+ 233   2            
+ 234   2              
+ 235   2          }
+ 236   1          lcd_cmd(0x01);
+ 237   1          lcd_cmd(0x80);
+ 238   1          lcd_str("Resetting");
+ 239   1          delay(2000);
+ 240   1          goto start;
+C51 COMPILER V9.60.0.0   LCD_INTERFACING                                                   07/10/2022 18:02:02 PAGE 5   
+
+ 241   1      
+ 242   1        }
+ 243          void lcd_str(unsigned char *str)
+ 244          {
+ 245   1         unsigned int loop = 0;
+ 246   1        for(loop =0;str[loop]!='\0';loop++)
+ 247   1        { 
+ 248   2          lcd_data(str[loop]);
+ 249   2        }
+ 250   1      }
+ 251          
+ 252          void lcd_data(unsigned char ch)
+ 253          {
+ 254   1      LCD_dat = ch;
+ 255   1        rs =1; // for data rs = 1
+ 256   1        //rw = 0; //for writing display rw =0
+ 257   1        en = 1;
+ 258   1        delay(5);
+ 259   1        en = 0;
+ 260   1      }
+ 261          
+ 262          void lcd_cmd(unsigned char ch)
+ 263          {
+ 264   1      LCD_dat = ch;
+ 265   1        rs = 0; //for command rs = 0
+ 266   1        //rw = 0; //for writing display rw =0
+ 267   1        en = 1;
+ 268   1        delay(5);
+ 269   1        en = 0;
+ 270   1      }
+ 271          void delay(unsigned int dly)
+ 272          {
+ 273   1      unsigned int loop = 0;
+ 274   1      unsigned int delay_gen = 0;
+ 275   1        for (loop=0; loop<dly; loop++){
+ 276   2          for (delay_gen=0; delay_gen<115; delay_gen++);
+ 277   2        }
+ 278   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1806    ----
+   CONSTANT SIZE    =     86    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      43
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

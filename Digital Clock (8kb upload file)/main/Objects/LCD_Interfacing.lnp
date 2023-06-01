@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\LCD_Interfacing.obj" 
+TO ".\Objects\LCD_Interfacing" 
+PRINT(".\Listings\LCD_Interfacing.m51")
